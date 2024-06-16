@@ -1,6 +1,5 @@
 package com.example.kotlinandroidexample.services
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.util.Base64
 import com.example.kotlinandroidexample.DBHelper
@@ -14,13 +13,31 @@ import kotlin.Exception
 interface AuthService {
     fun login(email: Email, password: String): LoginResult
     fun logout()
+    fun signUp(email: Email, password: String, name: String): SignUpResult
     data class LoginResult(
         val isSuccess: Boolean,
         val message: String?,
         val userProfile: UserProfile?
     ) {
-        constructor(message: String?) : this(false, message, null)
-        constructor(userProfile: UserProfile?) : this(true, null, userProfile)
+        companion object {
+            fun success(userProfile: UserProfile): LoginResult =
+                LoginResult(true, null, userProfile)
+
+            fun failure(message: String): LoginResult = LoginResult(false, message, null)
+
+        }
+    }
+
+    data class SignUpResult(val isSuccess: Boolean, val message: String?) {
+        companion object {
+            fun success(): SignUpResult {
+                return SignUpResult(isSuccess = true, message = null)
+            }
+
+            fun failure(message: String): SignUpResult {
+                return SignUpResult(isSuccess = false, message = message)
+            }
+        }
     }
 }
 
@@ -30,22 +47,27 @@ class FakeAuthService() : AuthService {
         val fakePassword = "123qwe"
 
         if (email != fakeEmail || password != fakePassword) {
-            return AuthService.LoginResult("Email or password is incorrect")
+            return AuthService.LoginResult.failure("Email or password is incorrect")
         }
-        return AuthService.LoginResult(UserProfile("1", email, "Baron"))
+        return AuthService.LoginResult.success(UserProfile("1", email, "Baron"))
     }
 
     override fun logout() {
     }
+
+    override fun signUp(email: Email, password: String, name: String): AuthService.SignUpResult {
+        TODO("Not yet implemented")
+    }
 }
 
-class SQLiteAuthService(private val dbHelper: DBHelper) : AuthService {
+class SQLiteAuthService private constructor(private val dbHelper: DBHelper) : AuthService {
 
     // try to apply companion object and singleton design pattern
     companion object {
-        private var instance: FakeAuthService? = null
+        private var instance: SQLiteAuthService? = null
         fun getInstance(dbHelper: DBHelper): SQLiteAuthService {
-            return SQLiteAuthService(dbHelper)
+            instance = instance ?: SQLiteAuthService(dbHelper)
+            return instance!!
         }
     }
 
@@ -95,7 +117,7 @@ class SQLiteAuthService(private val dbHelper: DBHelper) : AuthService {
         }
     }
 
-    fun signUp(email: Email, password: String, name: String): SignUpResult {
+    override fun signUp(email: Email, password: String, name: String): AuthService.SignUpResult {
         val db = dbHelper.writableDatabase
         return try {
             val salt = generateSalt()
@@ -110,29 +132,18 @@ class SQLiteAuthService(private val dbHelper: DBHelper) : AuthService {
 
             val newRowId = db.insert(DBHelper.USERS_TABLE_NAME, null, contentValues)
             if (newRowId != -1L) {
-                SignUpResult.Success()
+                AuthService.SignUpResult.success()
             } else {
-                SignUpResult.Failure("Error inserting user into database")
+                AuthService.SignUpResult.failure("Error inserting user into database")
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            SignUpResult.Failure("Exception: ${e.message}")
+            AuthService.SignUpResult.failure("Exception: ${e.message}")
         } finally {
             db.close()
         }
     }
 
-    data class SignUpResult(val isSuccess: Boolean, val message: String?) {
-        companion object {
-            fun Success(): SignUpResult {
-                return SignUpResult(isSuccess = true, message = null)
-            }
-
-            fun Failure(message: String): SignUpResult {
-                return SignUpResult(isSuccess = false, message = message)
-            }
-        }
-    }
 
     override fun logout() {
         TODO("Not yet implemented")
