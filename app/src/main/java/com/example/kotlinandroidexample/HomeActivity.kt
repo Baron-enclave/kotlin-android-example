@@ -10,7 +10,8 @@ import com.example.kotlinandroidexample.services.FakeAuthService
 class HomeActivity : AppCompatActivity() {
     // Creating FakeAuthService in both HomeActivity and MainActivity isn't necessary
     // Need a DI container to create it once
-    private val authService: AuthService = FakeAuthService.instance
+    private var dbHelper = DBHelper(this, null)
+    private val authService: AuthService = FakeAuthService()
 
     private lateinit var binding: ActivityHomeBinding
     override fun onCreate(savedInstanceState: Bundle?) {

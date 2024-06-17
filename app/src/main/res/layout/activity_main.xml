@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -42,6 +43,7 @@
             android:inputType="textPassword"
             android:padding="12dp"
             android:layout_marginBottom="32dp" />
+
         <TextView
             android:id="@+id/tvLoginMessage"
             android:layout_width="wrap_content"
@@ -52,6 +54,7 @@
             android:textColor="#E4190A"
 
             android:layout_marginBottom="8dp" />
+
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
@@ -59,7 +62,14 @@
             android:text="Login"
             android:backgroundTint="#6200EE"
             android:textColor="#FFF"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp" />
+            android:padding="12dp" />
+
+        <TextView
+            android:id="@+id/tvSignUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Don't have an account? Sign Up"
+            android:layout_gravity="center"
+            android:paddingVertical="16dp" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
