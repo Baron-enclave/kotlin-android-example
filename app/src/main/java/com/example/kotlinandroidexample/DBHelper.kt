@@ -14,18 +14,18 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             $ID_COL INTEGER PRIMARY KEY AUTOINCREMENT,
             $EMAIL_COL TEXT NOT NULL,
             $HASHED_PWD TEXT NOT NULL,
-            $SALT_COL TEXT NOT NULL,
+            $SALT_COL BLOB NOT NULL,
             $NAME_COL TEXT NOT NULL
             )"""
             db.execSQL(query)
 
-            val insertSQL = """INSERT INTO $USERS_TABLE_NAME ($EMAIL_COL, $HASHED_PWD)
-                |VALUES(?, ?)
-            """.trimMargin()
-            val statement = db.compileStatement(insertSQL)
-            statement.bindString(1, "baron@enclave.vn")
-            statement.bindString(2, "123qwe")
-            statement.executeInsert()
+//            val insertSQL = """INSERT INTO $USERS_TABLE_NAME ($EMAIL_COL, $HASHED_PWD)
+//                |VALUES(?, ?)
+//            """.trimMargin()
+//            val statement = db.compileStatement(insertSQL)
+//            statement.bindString(1, "baron@enclave.vn")
+//            statement.bindString(2, "123qwe")
+//            statement.executeInsert()
             db.setTransactionSuccessful()
         } catch (e: Exception) {
             println(e.printStackTrace())
@@ -37,27 +37,13 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-        // this method is to check if table already exists
         db.execSQL("DROP TABLE IF EXISTS $USERS_TABLE_NAME")
         onCreate(db)
     }
 
-    //    fun addName(name : String, age : String ){
-//        val values = ContentValues()
-//        values.put(NAME_COL, name)
-//        values.put(AGE_COL, age)
-//        val db = this.writableDatabase
-//        db.insert(TABLE_NAME, null, values)
-//        db.close()
-//    }
-    fun getName(): Cursor? {
-        val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM $USERS_TABLE_NAME", null)
-    }
-
     companion object {
         private const val DATABASE_NAME = "ANDROID_DEMO"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
         const val USERS_TABLE_NAME = "users"
         const val NAME_COL = "name"
         const val ID_COL = "id"
