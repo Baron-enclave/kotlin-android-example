@@ -5,15 +5,17 @@ import android.util.Base64
 import com.example.kotlinandroidexample.DBHelper
 import com.example.kotlinandroidexample.models.Email
 import com.example.kotlinandroidexample.models.UserProfile
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.security.MessageDigest
 import java.security.SecureRandom
 import kotlin.Exception
 
 
 interface AuthService {
-    fun login(email: Email, password: String): LoginResult
+    suspend fun login(email: Email, password: String): LoginResult
     fun logout()
-    fun signUp(email: Email, password: String, name: String): SignUpResult
+    suspend fun signUp(email: Email, password: String, name: String): SignUpResult
     data class LoginResult(
         val isSuccess: Boolean,
         val message: String?,
@@ -41,8 +43,8 @@ interface AuthService {
     }
 }
 
-class FakeAuthService() : AuthService {
-    override fun login(email: Email, password: String): AuthService.LoginResult {
+class FakeAuthService : AuthService {
+    override suspend fun login(email: Email, password: String): AuthService.LoginResult {
         val fakeEmail = Email("baron@enclave.vn")
         val fakePassword = "123qwe"
 
@@ -55,7 +57,11 @@ class FakeAuthService() : AuthService {
     override fun logout() {
     }
 
-    override fun signUp(email: Email, password: String, name: String): AuthService.SignUpResult {
+    override suspend fun signUp(
+        email: Email,
+        password: String,
+        name: String
+    ): AuthService.SignUpResult {
         TODO("Not yet implemented")
     }
 }
@@ -72,54 +78,62 @@ class SQLiteAuthService private constructor(private val dbHelper: DBHelper) : Au
     }
 
 
-    override fun login(email: Email, password: String): AuthService.LoginResult {
-        val db = dbHelper.readableDatabase
-        try {
-            val query =
-                "SELECT ${DBHelper.ID_COL}, ${DBHelper.NAME_COL}, ${DBHelper.HASHED_PWD}, ${DBHelper.SALT_COL} FROM ${DBHelper.USERS_TABLE_NAME} WHERE ${DBHelper.EMAIL_COL} = ?"
+    override suspend fun login(email: Email, password: String): AuthService.LoginResult =
+        withContext(Dispatchers.IO) {
+            val db = dbHelper.readableDatabase
+            try {
+                val query =
+                    """SELECT ${DBHelper.ID_COL}, 
+                        ${DBHelper.NAME_COL}, 
+                        ${DBHelper.HASHED_PWD}, 
+                        ${DBHelper.SALT_COL} 
+                        FROM ${DBHelper.USERS_TABLE_NAME} 
+                        WHERE ${DBHelper.EMAIL_COL} = ?"""
 
-            val cursor = db.rawQuery(query, arrayOf(email.value))
-            if (cursor.moveToFirst()) {
-                val userId = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.ID_COL))
-                val name = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.NAME_COL))
-                val storeSalt = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.SALT_COL))
-                val storeHashedPassword =
-                    cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.HASHED_PWD))
+                val cursor = db.rawQuery(query, arrayOf(email.value))
+                if (cursor.moveToFirst()) {
+                    println(cursor.count)
+                    val userId = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.ID_COL))
+                    val name = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.NAME_COL))
+                    val storeSalt = cursor.getBlob(cursor.getColumnIndexOrThrow(DBHelper.SALT_COL))
+                    val storeHashedPassword =
+                        cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.HASHED_PWD))
 
-                val saltDecode = Base64.decode(
-                    cursor.getString(cursor.getColumnIndexOrThrow("salt")),
-                    Base64.NO_WRAP
-                )
-                val hashedPassword = hashPassword(password, saltDecode)
-                if (hashedPassword == storeHashedPassword) {
-                    return AuthService.LoginResult(
-                        true,
-                        null,
-                        UserProfile(userId.toString(), email, name)
-                    )
+
+                    val hashedPassword = hashPassword(password, storeSalt)
+                    if (hashedPassword == storeHashedPassword) {
+                        return@withContext AuthService.LoginResult(
+                            true,
+                            null,
+                            UserProfile(userId.toString(), email, name)
+                        )
+                    }
                 }
+                cursor.close()
+                return@withContext AuthService.LoginResult(
+                    false,
+                    "Email or password is incorrect",
+                    null
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@withContext AuthService.LoginResult(
+                    false,
+                    "An unknown error occurred",
+                    null
+                )
+            } finally {
+                db.close()
             }
-            cursor.close()
-            return AuthService.LoginResult(
-                false,
-                "Email or password is incorrect",
-                null
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return AuthService.LoginResult(
-                false,
-                "An unknown error occurred",
-                null
-            )
-        } finally {
-            db.close()
         }
-    }
 
-    override fun signUp(email: Email, password: String, name: String): AuthService.SignUpResult {
+    override suspend fun signUp(
+        email: Email,
+        password: String,
+        name: String
+    ): AuthService.SignUpResult = withContext(Dispatchers.IO) {
         val db = dbHelper.writableDatabase
-        return try {
+        return@withContext try {
             val salt = generateSalt()
             val hashedPassword = hashPassword(password, salt)
 
