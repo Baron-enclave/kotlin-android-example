@@ -2,8 +2,7 @@ package com.example.kotlinandroidexample.services
 
 import android.content.ContentValues
 import android.util.Base64
-import com.example.kotlinandroidexample.DBHelper
-import com.example.kotlinandroidexample.models.Email
+import com.example.kotlinandroidexample.helpers.DBHelper
 import com.example.kotlinandroidexample.models.UserProfile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,9 +12,9 @@ import kotlin.Exception
 
 
 interface AuthService {
-    suspend fun login(email: Email, password: String): LoginResult
+    suspend fun login(email: String, password: String): LoginResult
     fun logout()
-    suspend fun signUp(email: Email, password: String, name: String): SignUpResult
+    suspend fun signUp(email: String, password: String, name: String): SignUpResult
     data class LoginResult(
         val isSuccess: Boolean,
         val message: String?,
@@ -43,29 +42,6 @@ interface AuthService {
     }
 }
 
-class FakeAuthService : AuthService {
-    override suspend fun login(email: Email, password: String): AuthService.LoginResult {
-        val fakeEmail = Email("baron@enclave.vn")
-        val fakePassword = "123qwe"
-
-        if (email != fakeEmail || password != fakePassword) {
-            return AuthService.LoginResult.failure("Email or password is incorrect")
-        }
-        return AuthService.LoginResult.success(UserProfile("1", email, "Baron"))
-    }
-
-    override fun logout() {
-    }
-
-    override suspend fun signUp(
-        email: Email,
-        password: String,
-        name: String
-    ): AuthService.SignUpResult {
-        TODO("Not yet implemented")
-    }
-}
-
 class SQLiteAuthService private constructor(private val dbHelper: DBHelper) : AuthService {
 
     // try to apply companion object and singleton design pattern
@@ -78,7 +54,7 @@ class SQLiteAuthService private constructor(private val dbHelper: DBHelper) : Au
     }
 
 
-    override suspend fun login(email: Email, password: String): AuthService.LoginResult =
+    override suspend fun login(email: String, password: String): AuthService.LoginResult =
         withContext(Dispatchers.IO) {
             val db = dbHelper.readableDatabase
             try {
@@ -90,7 +66,7 @@ class SQLiteAuthService private constructor(private val dbHelper: DBHelper) : Au
                         FROM ${DBHelper.USERS_TABLE_NAME} 
                         WHERE ${DBHelper.EMAIL_COL} = ?"""
 
-                val cursor = db.rawQuery(query, arrayOf(email.value))
+                val cursor = db.rawQuery(query, arrayOf(email))
                 if (cursor.moveToFirst()) {
                     println(cursor.count)
                     val userId = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.ID_COL))
@@ -128,7 +104,7 @@ class SQLiteAuthService private constructor(private val dbHelper: DBHelper) : Au
         }
 
     override suspend fun signUp(
-        email: Email,
+        email: String,
         password: String,
         name: String
     ): AuthService.SignUpResult = withContext(Dispatchers.IO) {
@@ -138,7 +114,7 @@ class SQLiteAuthService private constructor(private val dbHelper: DBHelper) : Au
             val hashedPassword = hashPassword(password, salt)
 
             val contentValues = ContentValues().apply {
-                put(DBHelper.EMAIL_COL, email.value)
+                put(DBHelper.EMAIL_COL, email)
                 put(DBHelper.NAME_COL, name)
                 put(DBHelper.HASHED_PWD, hashedPassword)
                 put(DBHelper.SALT_COL, salt)

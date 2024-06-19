@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.kotlinandroidexample.models.Email
+import com.example.kotlinandroidexample.models.isValidEmail
 import com.example.kotlinandroidexample.models.isValidPassword
 import com.example.kotlinandroidexample.services.AuthService
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class SignUpViewModel(private val authService: AuthService) : ViewModel() {
     val responseLiveData = MutableLiveData<SignUpResponse>(SignUpResponse.Loading)
-    var email: Email = Email("")
+    var email: String = ""
     var password: String = ""
     var name: String = ""
 

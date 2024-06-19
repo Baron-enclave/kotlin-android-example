@@ -1,16 +1,16 @@
-package com.example.kotlinandroidexample
+package com.example.kotlinandroidexample.views
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.example.kotlinandroidexample.databinding.ActivityMainBinding
-import com.example.kotlinandroidexample.models.Email
+import com.example.kotlinandroidexample.helpers.DBHelper
 import com.example.kotlinandroidexample.services.AuthService
 import com.example.kotlinandroidexample.services.SQLiteAuthService
 import com.example.kotlinandroidexample.viewmodels.LoginViewModel
+import com.example.kotlinandroidexample.views.home.HomeActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        binding.lifecycleOwner = this
         setContentView(binding.root)
         dbHelper = DBHelper(this, null)
         authService = SQLiteAuthService.getInstance(dbHelper)
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         val loginViewModelFactory = LoginViewModel.LoginViewModelFactory(authService)
         loginViewModel =
             ViewModelProvider(this, loginViewModelFactory)[LoginViewModel::class.java]
+
 
         binding.viewModel = loginViewModel
         loginViewModel.loginLiveDataResponse.observe(this) {
@@ -47,16 +49,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-
-        binding.etEmail.addTextChangedListener {
-            loginViewModel.email = Email(it.toString())
-        }
-
-        binding.etPassword.addTextChangedListener {
-            loginViewModel.password = it.toString()
-        }
-
         binding.tvSignUp.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
@@ -68,10 +60,4 @@ class MainActivity : AppCompatActivity() {
         binding.tvLoginMessage.text = message
         binding.tvLoginMessage.visibility = View.VISIBLE
     }
-
-//    fun hideMessage() {
-//        binding.tvLoginMessage.visibility = View.INVISIBLE
-//    }
-
-
 }

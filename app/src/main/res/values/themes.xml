@@ -2,8 +2,17 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.KotlinAndroidExample" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/my_light_primary</item>
+
     </style>
 
-    <style name="Theme.KotlinAndroidExample" parent="Base.Theme.KotlinAndroidExample" />
+    <style name="CustomToolbarStyle." parent="Base.Theme.KotlinAndroidExample">
+        <item name="titleTextColor">@color/white</item>
+        <item name="subtitleTextColor">@color/white</item>
+        <item name="titleTextStyle">@style/CustomToolbarTitleStyle</item>
+    </style>
+ 
+    <style name="CustomToolbarTitleStyle">
+        <item name="android:color">@color/white</item>
+    </style>
 </resources>

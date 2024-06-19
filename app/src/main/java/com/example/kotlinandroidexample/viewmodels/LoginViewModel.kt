@@ -1,19 +1,20 @@
 package com.example.kotlinandroidexample.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.kotlinandroidexample.models.Email
+import com.example.kotlinandroidexample.models.isValidEmail
 import com.example.kotlinandroidexample.services.AuthService
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val authService: AuthService) : ViewModel() {
     val loginLiveDataResponse = MutableLiveData<LoginResponse>()
-    var email: Email = Email("")
-    var password: String = ""
+    val emailLiveData = MutableLiveData<String>("")
+    val passwordLiveData = MutableLiveData<String>("")
 
     fun login() {
         val exceptionHandler = CoroutineExceptionHandler { _, e ->
@@ -21,17 +22,31 @@ class LoginViewModel(private val authService: AuthService) : ViewModel() {
             loginLiveDataResponse.value = LoginResponse.Failure(e.message ?: "Unknown Error")
         }
         viewModelScope.launch(exceptionHandler) {
-            if (!email.isValidEmail()) {
+
+            if (emailLiveData.value?.isValidEmail() != true) {
                 loginLiveDataResponse.value = LoginResponse.Failure("Email is invalid")
             } else {
-                val result = authService.login(email, password)
+                Log.d(
+                    "LoginViewModel",
+                    "Email: ${emailLiveData.value} Password: ${passwordLiveData.value}"
+                )
+                val result =
+                    authService.login(emailLiveData.value ?: "", passwordLiveData.value ?: "")
                 loginLiveDataResponse.value =
                     if (result.isSuccess) LoginResponse.Success else LoginResponse.Failure(
                         result.message ?: "Unknown Error"
                     )
             }
         }
+    }
 
+    fun onEmailChanged(value: String) {
+//        this.email = value
+        emailLiveData.value = value
+    }
+
+    fun onPasswordChanged(value: String) {
+        passwordLiveData.value = value
     }
 
     sealed class LoginResponse {

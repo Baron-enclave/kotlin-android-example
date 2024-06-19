@@ -1,4 +1,4 @@
-package com.example.kotlinandroidexample
+package com.example.kotlinandroidexample.views
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,10 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.example.kotlinandroidexample.databinding.ActivitySignupBinding
-import com.example.kotlinandroidexample.models.Email
+import com.example.kotlinandroidexample.helpers.DBHelper
 import com.example.kotlinandroidexample.services.SQLiteAuthService
 import com.example.kotlinandroidexample.viewmodels.SignUpViewModel
-import kotlinx.coroutines.runBlocking
+import com.example.kotlinandroidexample.views.home.HomeActivity
 
 
 class SignUpActivity : AppCompatActivity() {
@@ -45,7 +45,7 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         binding.etEmail.addTextChangedListener {
-            signUpViewModel.email = Email(it.toString())
+            signUpViewModel.email = it.toString()
 
         }
 

@@ -38,6 +38,7 @@ android {
 }
 
 dependencies {
+    def dagger_version = "2.40"
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
@@ -45,13 +46,17 @@ dependencies {
     implementation libs.androidx.constraintlayout
     implementation libs.androidx.navigation.fragment.ktx
     implementation libs.androidx.navigation.ui.ktx
-    implementation libs.androidx.databinding.runtime
+    implementation libs.rxkotlin
+    implementation libs.rxandroid
+    implementation libs.gson
+    implementation libs.retrofit
+    implementation libs.converter.gson
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
-
-    implementation libs.androidx.concurrent.futures.ktx
-    implementation libs.kotlinx.coroutines.core.v190rc
-    implementation(libs.kotlinx.coroutines.android.v190rc)
+    implementation libs.glide
+    implementation libs.adapter.rxjava3
+    implementation libs.dagger
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
 }
