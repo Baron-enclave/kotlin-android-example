@@ -12,12 +12,16 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.RectF
+import android.location.Location
 import android.os.Bundle
 import android.provider.CalendarContract.Colors
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.toColorInt
 import com.example.kotlinandroidexample.databinding.ActivityMapsBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.FusedOrientationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -28,13 +32,19 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 
+private const val FINE_PERMISSION_CODE = 1
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
-
+    private var currentLocation: Location? = null
+    private lateinit var fusedOrientationProviderClient: FusedLocationProviderClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        fusedOrientationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        getLastLocation()
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -45,36 +55,56 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+    private fun getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
+            return
+        }
+        
+        fusedOrientationProviderClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                currentLocation = location
+                val mapFragment = supportFragmentManager
+                    .findFragmentById(R.id.map) as SupportMapFragment
+                mapFragment.getMapAsync(this)
+            }
+        }
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-//        //Random 100 marker
-//        for (i in 0..500) {
-//            val lat = -90 + (180 * Math.random())
-//            val lon = -180 + (360 * Math.random())
-//            val latLng = LatLng(lat, lon)
-//            val markerOption = MarkerOptions().position(latLng).title("Marker in $lat, $lon")
-//            markerOption.icon(setIcon(this, R.drawable.anchor_gg_marker))
-//            mMap.addMarker(markerOption)
-//        }
+        val sydney = if (currentLocation != null)
+            LatLng(currentLocation!!.latitude, currentLocation!!.longitude)
+        else LatLng(-34.0, 151.0)
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
         val markerOption = MarkerOptions().position(sydney).title("Marker in Sydney")
         markerOption.icon(setIcon(this, R.drawable.anchor_gg_marker))
 
         mMap.addMarker(markerOption)
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == FINE_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                getLastLocation()
+            }
+        }
     }
 
     private fun setIcon(context: Context, drawableId: Int): BitmapDescriptor {
