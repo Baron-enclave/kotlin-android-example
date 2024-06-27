@@ -1,11 +1,12 @@
-package com.example.kotlinandroidexample
+package com.example.kotlinandroidexample.views
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
+import com.example.kotlinandroidexample.DBHelper
 import com.example.kotlinandroidexample.databinding.ActivityMainBinding
 import com.example.kotlinandroidexample.models.Email
 import com.example.kotlinandroidexample.services.AuthService

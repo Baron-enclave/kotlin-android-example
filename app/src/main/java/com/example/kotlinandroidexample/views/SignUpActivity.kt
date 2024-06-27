@@ -1,4 +1,4 @@
-package com.example.kotlinandroidexample
+package com.example.kotlinandroidexample.views
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,12 +7,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
+import com.example.kotlinandroidexample.DBHelper
 import com.example.kotlinandroidexample.databinding.ActivitySignupBinding
 import com.example.kotlinandroidexample.models.Email
 import com.example.kotlinandroidexample.services.SQLiteAuthService
 import com.example.kotlinandroidexample.viewmodels.SignUpViewModel
-import kotlinx.coroutines.runBlocking
-
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding

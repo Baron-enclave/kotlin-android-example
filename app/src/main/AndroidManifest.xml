@@ -22,7 +22,7 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".views.MapsActivity"
             android:exported="true"
             android:label="@string/title_activity_maps">
             <intent-filter>
@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".views.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.KotlinAndroidExample">
             <!--            <intent-filter>-->
@@ -42,10 +42,10 @@
             <!--            </intent-filter>-->
         </activity>
         <activity
-            android:name=".HomeActivity"
+            android:name=".views.HomeActivity"
             android:exported="true" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".views.SignUpActivity"
             android:exported="true" />
     </application>
 
