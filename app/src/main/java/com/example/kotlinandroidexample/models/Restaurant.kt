@@ -12,19 +12,19 @@ class Restaurant(
 )
 
 val mRestaurants = mutableSetOf(
-    Restaurant(
-        "1",
-        "QUÁN CHAY SUKHA",
-        null,
-        18.464176,
-        107.605988,
-        "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
-        2f,
-        comment = Comment(
-            "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
-            "Quán chay này rất ngon, mình rất thích",
-        )
-    ),
+//    Restaurant(
+//        "1",
+//        "QUÁN CHAY SUKHA",
+//        null,
+//        18.464176,
+//        107.605988,
+//        "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
+//        2f,
+//        comment = Comment(
+//            "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
+//            "Quán chay này rất ngon, mình rất thích",
+//        )
+//    ),
     Restaurant(
         "2",
         "THUAN CHAY - VEGAN",
@@ -91,24 +91,24 @@ val mRestaurants = mutableSetOf(
         "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
         7f,
         comment = Comment(
-            "",
+            "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
             "Simple quan chay vegetarian restaurant. Menu has English but none spoken by staff. Serves vegan noodle soups, mock meats, tofu in dishes, and desserts for which dairy might be used so ask i unsure. Note: Reported in January 2023 that English menu might not list ingredients correctly for some dishes - ask if unsure. Open Mon-Sun 9:00am-9:00pm."
         )
     ),
     // add more, random latlong
-    Restaurant(
-        "7",
-        "QUÁN CHAY SUKHA",
-        null,
-        16.461176,
-        107.606088,
-        "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
-        2f,
-        comment = Comment(
-            "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
-            "Quán chay này rất ngon, mình rất thích",
-        )
-    ),
+//    Restaurant(
+//        "7",
+//        "QUÁN CHAY SUKHA",
+//        null,
+//        16.461176,
+//        107.606088,
+//        "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
+//        2f,
+//        comment = Comment(
+//            "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
+//            "Quán chay này rất ngon, mình rất thích",
+//        )
+//    ),
     Restaurant(
         "8",
         "THUAN CHAY - VEGAN",
@@ -175,7 +175,7 @@ val mRestaurants = mutableSetOf(
         "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
         7f,
         comment = Comment(
-            "",
+            "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
             "Simple quan chay vegetarian restaurant. Menu has English but none spoken by staff. Serves vegan noodle soups, mock meats, tofu in dishes, and desserts for which dairy might be used so ask i unsure. Note: Reported in January 2023 that English menu might not list ingredients correctly for some dishes - ask if unsure. Open Mon-Sun 9:00am-9:00pm."
         )
     ),
@@ -184,8 +184,34 @@ val mRestaurants = mutableSetOf(
         "13",
         "QUÁN CHAY SUKHA",
         null,
-        16.461176,
-        107.605988,
+        18.761176,
+        105.205988,
+        "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
+        2f,
+        comment = Comment(
+            "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
+            "Quán chay này rất ngon, mình rất thích",
+        )
+    ),
+    Restaurant(
+        "13",
+        "QUÁN CHAY SUKHA",
+        null,
+        19.761176,
+        105.205988,
+        "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
+        2f,
+        comment = Comment(
+            "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
+            "Quán chay này rất ngon, mình rất thích",
+        )
+    ),
+    Restaurant(
+        "13",
+        "QUÁN CHAY SUKHA",
+        null,
+        18.901176,
+        105.505988,
         "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
         2f,
         comment = Comment(
@@ -194,4 +220,17 @@ val mRestaurants = mutableSetOf(
         )
     ),
 
-    )
+    Restaurant(
+        "13",
+        "QUÁN CHAY SUKHA",
+        null,
+        18.481176,
+        105.005988,
+        "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
+        2f,
+        comment = Comment(
+            "https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg",
+            "Quán chay này rất ngon, mình rất thích",
+        )
+    ),
+)
