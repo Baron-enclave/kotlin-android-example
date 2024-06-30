@@ -3,7 +3,6 @@ package com.example.kotlinandroidexample.views.map
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.collection.LruCache
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -46,7 +45,6 @@ class MapMarkersRenderer(
                     loadBitmapImage(marker.icon.url)
                 }
                 cachedIcon?.let {
-                    null
                     RestaurantMarker.Icon.BitmapIcon(marker.icon.url, it)
                 } ?: marker.icon
             }
