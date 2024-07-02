@@ -1,19 +1,19 @@
-package com.example.kotlinandroidexample.views
+package com.example.kotlinandroidexample.views.map
 
 import android.Manifest
+import android.content.Context
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import com.example.kotlinandroidexample.R
-import com.example.kotlinandroidexample.databinding.ActivityMapsBinding
 import com.example.kotlinandroidexample.models.mRestaurants
-import com.example.kotlinandroidexample.viewmodels.MapViewModel
-import com.example.kotlinandroidexample.views.map.MapMarkersRenderer
-import com.example.kotlinandroidexample.views.map.RestaurantMarker
+import com.example.kotlinandroidexample.views.FINE_PERMISSION_CODE
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -21,34 +21,38 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterManager
 
-const val FINE_PERMISSION_CODE = 1
-
-
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
-
+class MapsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
-    private lateinit var binding: ActivityMapsBinding
     private var currentLocation: Location? = null
     private lateinit var fusedOrientationProviderClient: FusedLocationProviderClient
     private lateinit var clusterManager: ClusterManager<RestaurantMarker>
-    private lateinit var mapRenderer: MapMarkersRenderer
     private var currentMarkersSet = mutableSetOf<RestaurantMarker>()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private lateinit var mapRenderer: MapMarkersRenderer
+    private lateinit var activity: AppCompatActivity
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_maps, container, false)
 
-
-        fusedOrientationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        binding = ActivityMapsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        val mapFragment = supportFragmentManager
+        val mapFragment = getChildFragmentManager()
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        getLastLocation()
+//        getLastLocation()
+        return view
+
+
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity = getActivity() as AppCompatActivity
+    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
         setUpClusterManager()
         // Hue city Vietnam
         mMap.animateCamera(
@@ -61,7 +65,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setUpClusterManager() {
         if (!this::clusterManager.isInitialized) {
-            clusterManager = ClusterManager(this, mMap)
+            clusterManager = ClusterManager(context, mMap)
         }
 
         mMap.apply {
@@ -70,7 +74,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 
-        mapRenderer = MapMarkersRenderer(this, mMap, clusterManager) {
+        mapRenderer = MapMarkersRenderer(activity, mMap, clusterManager) {
             currentMarkersSet.forEach { marker ->
                 if (marker.icon.url == it.url) {
                     clusterManager.updateItem(marker)
@@ -90,30 +94,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         })
     }
 
-    private fun getLastLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                1
-            )
-            return
-        }
-
-        fusedOrientationProviderClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                currentLocation = location
-                val mapFragment = supportFragmentManager
-                    .findFragmentById(R.id.map) as SupportMapFragment
-                mapFragment.getMapAsync(this)
-            }
-        }
-    }
-
     private fun setMarkers(markers: List<RestaurantMarker>) {
         val newMarkersSet = markers.toMutableSet()
         val removedElements = currentMarkersSet - newMarkersSet
@@ -126,17 +106,42 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+    private fun getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
+            return
+        }
+
+        fusedOrientationProviderClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                currentLocation = location
+                val mapFragment =
+                    activity.supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+                mapFragment.getMapAsync(this)
+            }
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        activity.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == FINE_PERMISSION_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 getLastLocation()
             }
         }
     }
+
 
 }

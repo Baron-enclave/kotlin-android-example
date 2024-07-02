@@ -1,10 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.kotlinandroidexample.views.MainActivity">
+    android:id="@+id/navigation">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/mnu_explore"
+        android:title="Explore"
+        android:icon="@drawable/baseline_search_24"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/mnu_community"
+        android:title="Community"
+        android:icon="@drawable/group_24"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/mnu_saved"
+        android:title="Saved"
+        app:showAsAction="always"
+        android:icon="@drawable/bookmark_24" />
+
+
+    <item
+        android:id="@+id/mnu_me"
+        android:title="Me"
+        app:showAsAction="always"
+        android:icon="@drawable/person_24" />
+
 </menu>
