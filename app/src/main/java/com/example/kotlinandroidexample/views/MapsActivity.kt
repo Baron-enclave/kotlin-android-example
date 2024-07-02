@@ -30,17 +30,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityMapsBinding
     private var currentLocation: Location? = null
     private lateinit var fusedOrientationProviderClient: FusedLocationProviderClient
-    private lateinit var viewModel: MapViewModel
     private lateinit var clusterManager: ClusterManager<RestaurantMarker>
     private lateinit var mapRenderer: MapMarkersRenderer
     private var currentMarkersSet = mutableSetOf<RestaurantMarker>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = MapViewModel()
 
         fusedOrientationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        getLastLocation()
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val mapFragment = supportFragmentManager
@@ -49,13 +46,30 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         getLastLocation()
     }
 
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        setUpClusterManager()
+        // Hue city Vietnam
+        mMap.animateCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                LatLng(16.4637, 107.5909),
+                15f
+            )
+        )
+    }
+
     private fun setUpClusterManager() {
         if (!this::clusterManager.isInitialized) {
             clusterManager = ClusterManager(this, mMap)
         }
 
-        mMap.setOnCameraIdleListener(clusterManager)
-        mMap.setOnMarkerClickListener(clusterManager)
+        mMap.apply {
+            setOnCameraIdleListener(clusterManager)
+            setOnMarkerClickListener(clusterManager)
+        }
+
+
         mapRenderer = MapMarkersRenderer(this, mMap, clusterManager) {
             currentMarkersSet.forEach { marker ->
                 if (marker.icon.url == it.url) {
@@ -64,9 +78,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
-        clusterManager.setOnClusterItemClickListener {
-            true
-        }
+
         clusterManager.renderer = mapRenderer
         clusterManager.clearItems()
         setMarkers(mRestaurants.map {
@@ -113,17 +125,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        setUpClusterManager()
-        // Hue city Vietnam
-        mMap.animateCamera(
-            CameraUpdateFactory.newLatLngZoom(
-                LatLng(16.4637, 107.5909),
-                15f
-            )
-        )
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

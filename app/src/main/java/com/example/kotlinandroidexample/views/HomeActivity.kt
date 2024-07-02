@@ -19,9 +19,9 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Glide.with(this)
-            .load("https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg")
-            .into(binding.ivLogo)
+//        Glide.with(this)
+//            .load("https://images.happycow.net/venues/200x200/35/23/hcmp352305_2150589.jpeg")
+//            .into(binding.ivLogo)
 //        val bitmap = Bitmap.createScaledBitmap(
 //            viewToBitmap(markerView),
 //            markerCardView.width,
