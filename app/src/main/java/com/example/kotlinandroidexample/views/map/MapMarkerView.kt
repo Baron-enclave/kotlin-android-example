@@ -38,13 +38,12 @@ class MapMarkerView(context: Context) : ConstraintLayout(context) {
                 RoundedBitmapDrawableFactory.create(resources, markerIcon.image)
             }
 
-            is RestaurantMarker.Icon.Placeholder ->{
-                val drawable = ResourcesCompat.getDrawable(
+            is RestaurantMarker.Icon.Placeholder -> {
+                ResourcesCompat.getDrawable(
                     resources,
-                    android.R.drawable.ic_menu_mylocation,
+                    android.R.drawable.ic_menu_mylocation, // default icon
                     null
                 )
-                drawable
             }
         }
         return drawable
