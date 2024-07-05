@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="RatingBarStyle" parent="Widget.AppCompat.RatingBar.Small">
+        <item name="android:progressTint">#6200EE</item>
+    </style>
+
+    <style name="BottomNavigationStyle">
+        <item name="labelVisibilityMode">labeled</item>
+    </style>
+</resources>

@@ -39,7 +39,11 @@
 
     </LinearLayout>
 
-    <!--    <include layout="@layout/view_explore_bottom_sheet" />-->
-
-
+    <include
+        layout="@layout/view_explore_carousel"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="96dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

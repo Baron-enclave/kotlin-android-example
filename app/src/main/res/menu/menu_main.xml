@@ -6,23 +6,21 @@
         android:id="@+id/mnu_explore"
         android:title="Explore"
         android:icon="@drawable/baseline_search_24"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/mnu_community"
         android:title="Community"
         android:icon="@drawable/group_24"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/mnu_saved"
         android:title="Saved"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/bookmark_24" />
-
-
     <item
         android:id="@+id/mnu_me"
         android:title="Me"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/person_24" />
 
 </menu>

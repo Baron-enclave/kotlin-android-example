@@ -5,20 +5,30 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
 
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:background="@drawable/bottom_sheet_shadow"
+        app:layout_anchor="@id/bottom_sheet" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/bottom_sheet"
         android:orientation="vertical"
-        android:background="#fff"
         android:fitsSystemWindows="false"
-
+        android:background="#FFF"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <TextView
-            android:layout_width="match_parent"
+        <ImageView
+
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="hello there" />
+            android:layout_gravity="center"
+
+            android:src="@drawable/remove_24"
+            android:scaleType="centerCrop" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -30,223 +40,12 @@
             android:fillViewport="true"
             android:elevation="5dp">
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/explore_bottomsheet_rcv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_gravity="center_vertical"
-                android:weightSum="3">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_weight="2"
-                    android:text="Order Details"
-                    android:textColor="#444"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:gravity="end"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:textSize="15sp"
-                    android:text="₹435.00" />
-            </LinearLayout>
-
+            </androidx.recyclerview.widget.RecyclerView>
 
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
