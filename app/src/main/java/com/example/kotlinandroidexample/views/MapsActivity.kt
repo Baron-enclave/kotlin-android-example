@@ -1,14 +1,13 @@
 package com.example.kotlinandroidexample.views
 
 import android.Manifest
-import android.graphics.Bitmap
+import android.animation.ValueAnimator
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
 import androidx.core.app.ActivityCompat
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.example.kotlinandroidexample.R
 import com.example.kotlinandroidexample.databinding.ActivityMapsBinding
 import com.example.kotlinandroidexample.models.Restaurant
@@ -21,7 +20,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
@@ -38,16 +36,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
-    private var currentLocation: Location? = null
     private lateinit var fusedOrientationProviderClient: FusedLocationProviderClient
 
-    private var restaurantMarkerMap: MutableMap<Restaurant, MarkerInfo?> = mutableMapOf()
-    private lateinit var dotMarker: BitmapDescriptor
-
-    private var markerCreationSubject: PublishSubject<IconData> = PublishSubject.create()
+    private var markerCreationSubject: PublishSubject<MarkerCreationData> = PublishSubject.create()
     private var zoomEventSubject: PublishSubject<ZoomEventData> = PublishSubject.create()
     private lateinit var markerCreationDisposable: Disposable
     private lateinit var zoomEventDisposable: Disposable
+
+    private var restaurantMarkerMap: MutableMap<Restaurant, MarkerInfo?> = mutableMapOf()
+    private lateinit var dotMarker: BitmapDescriptor
+    private var currentLocation: Location? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,7 +57,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         getLastLocation()
-        dotMarker = getDotIcon()
+        dotMarker = MarkerUtils.getDotIcon(this)
         val res = getRestaurants()
         restaurantMarkerMap.putAll(res.map { it to null })
     }
@@ -69,20 +68,49 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap = googleMap
             markerCreationDisposable = markerCreationSubject
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe { it ->
+
                     val oldMarker = restaurantMarkerMap[it.restaurant]?.marker
-                    oldMarker?.remove()
-                    restaurantMarkerMap[it.restaurant] = null
-                    if (it.iconType != MarkerType.HIDE) {
-                        val newMarker = mMap.addMarker(it.newMarkerOptions)
-                        restaurantMarkerMap[it.restaurant] = MarkerInfo(newMarker, it.iconType)
-                    }
+                    ValueAnimator.ofFloat(1f, 0f).apply {
+                        duration = 300
+                        interpolator = LinearOutSlowInInterpolator()
+                        addUpdateListener {
+                            oldMarker?.apply {
+                                alpha = animatedValue as Float
+                                setAnchor(
+                                    0f, 1 - animatedValue as Float
+                                )
+                            }
+                        }
+                        doOnEnd { _ ->
+                            oldMarker?.remove()
+                            restaurantMarkerMap[it.restaurant] = null
+                            if (it.iconType != MarkerType.HIDE) {
+                                val newMarker = mMap.addMarker(it.newMarkerOptions.apply {
+                                    alpha(0f)
+                                })
+                                restaurantMarkerMap[it.restaurant] =
+                                    MarkerInfo(newMarker, it.iconType)
+                                ValueAnimator.ofFloat(0f, 1f).apply {
+                                    duration = 300
+                                    interpolator = LinearOutSlowInInterpolator()
+                                    addUpdateListener {
+                                        newMarker?.apply {
+                                            alpha = it.animatedValue as Float
+                                            setAnchor(
+                                                0f,
+                                                1 - it.animatedValue as Float
+                                            )
+                                        }
+                                    }
+                                }.start()
+                            }
+                        }
+                    }.start()
                 }
 
             zoomEventDisposable = zoomEventSubject.observeOn(Schedulers.io())
-                .subscribe {
-                    updateMarkers(it)
-                }
+                .subscribe(this::updateMarkers)
             mMap.apply {
                 animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
@@ -103,55 +131,54 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun updateMarkers(zoomEventData: ZoomEventData) {
-        Log.d(TAG, "updateMarkers: current thread: ${Thread.currentThread().name}")
         for (restaurant in restaurantMarkerMap.keys) {
-            if (!zoomEventData.latLngBounds.contains(
-                    LatLng(
-                        restaurant.latitude,
-                        restaurant.longitude
+            val latLng = LatLng(
+                restaurant.latitude,
+                restaurant.longitude
+            )
+            if (zoomEventData.latLngBounds.contains(latLng)) {
+                val markerType = computeMarkerType(zoomEventData.zoomLevel, restaurant)
+                if (restaurantMarkerMap[restaurant]?.markerType != markerType) {
+                    val iconBitmapDescriptor = when (markerType) {
+                        MarkerType.PILL -> MarkerUtils.getPillIcon(this, restaurant)
+                        MarkerType.DOT -> dotMarker
+                        MarkerType.HIDE -> null
+                    }
+                    val markerOptions = MarkerOptions().apply {
+                        icon(iconBitmapDescriptor)
+                        position(latLng)
+
+                    }
+                    markerCreationSubject.onNext(
+                        MarkerCreationData(
+                            markerType,
+                            markerOptions,
+                            restaurant
+                        )
                     )
-                )
-            ) {
-                continue
-            }
-            val iconType = computeIconType(zoomEventData.zoomLevel, restaurant)
-            if (restaurantMarkerMap[restaurant]?.iconType != iconType) {
-                val iconBitmapDescriptor = when (iconType) {
-                    MarkerType.PILL -> getPillIcon(restaurant)
-                    MarkerType.DOT -> dotMarker
-                    MarkerType.HIDE -> null
                 }
-                val markerOptions = MarkerOptions().apply {
-                    icon(iconBitmapDescriptor)
-                    position(LatLng(restaurant.latitude, restaurant.longitude))
-                }
-                markerCreationSubject.onNext(
-                    IconData(
-                        iconType,
-                        markerOptions,
-                        restaurant
-                    )
-                )
             }
+
         }
     }
 
 
-    private fun computeIconType(
+    private fun computeMarkerType(
         zoomLevel: Float,
         restaurant: Restaurant
     ): MarkerType {
         val minZoomLevelToShow = 11
         val maxZoomLevelToShow = 17
-        val maxRating = 5
-        val minRating = 0
+        val maxRating = 5f
+        val minRating = 0f
 
-        if (restaurant.rating == 5.0f) return MarkerType.PILL
-        else {
+        if (restaurant.rating == maxRating) {
+            return MarkerType.PILL
+        } else {
+            val ratio = (maxRating - restaurant.rating) / maxRating
             val zoomThresholds =
-                minZoomLevelToShow +
-                        ((maxRating - restaurant.rating) * (maxZoomLevelToShow - minZoomLevelToShow)
-                                / (maxRating - minRating))
+                minZoomLevelToShow + ratio * (maxZoomLevelToShow - minZoomLevelToShow)
+
             return if (zoomLevel < zoomThresholds - 1.5) {
                 MarkerType.HIDE
             } else if (zoomLevel < zoomThresholds) {
@@ -162,42 +189,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun getDotIcon(): BitmapDescriptor {
-        val dotMarker = View.inflate(this, R.layout.view_dot_marker, null)
-        val bitmap = Bitmap.createScaledBitmap(
-            MarkerUtils.viewToBitmap(dotMarker),
-            dotMarker.width,
-            dotMarker.height,
-            true
-        )
-
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
-    }
-
-    private fun getPillIcon(restaurant: Restaurant): BitmapDescriptor {
-        val pillMarker = View.inflate(this, R.layout.view_pill_marker, null)
-        val textView: TextView = pillMarker.findViewById(R.id.pillMarkerRatingText)
-        textView.text = restaurant.rating.toString()
-        val bitmap = Bitmap.createScaledBitmap(
-            MarkerUtils.viewToBitmap(pillMarker),
-            pillMarker.width,
-            pillMarker.height,
-            true
-        )
-
-        val markerViewIcon = BitmapDescriptorFactory.fromBitmap(
-            MarkerUtils.addShadow(
-                bitmap,
-                pillMarker.height,
-                pillMarker.width,
-                0xFF707070.toInt(),
-                5,
-                0f,
-                5f
-            )
-        )
-        return markerViewIcon
-    }
 
     private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(
@@ -243,14 +234,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private data class ZoomEventData(val zoomLevel: Float, val latLngBounds: LatLngBounds)
-    private data class MarkerInfo(val marker: Marker?, val iconType: MarkerType)
+    private data class MarkerInfo(val marker: Marker?, val markerType: MarkerType)
 
-    private data class IconData(
+    private data class MarkerCreationData(
         val iconType: MarkerType,
         val newMarkerOptions: MarkerOptions,
         val restaurant: Restaurant
     )
-
 
     enum class MarkerType {
         PILL, DOT, HIDE

@@ -25,6 +25,8 @@ fun getRestaurants(): List<Restaurant> {
                 null,
                 16.4637 + Random.nextDouble(-0.18, 0.18),
                 107.59095 + Random.nextDouble(-0.18, 0.18),
+//                16.4637 + Random.nextDouble(-0.01, 0.01),
+//                107.59095 + Random.nextDouble(-0.01, 0.01),
                 "https://images.happycow.net/venues/200x200/28/81/hcmp28812_379199.jpeg",
                 String.format(Locale.ENGLISH, "%.1f", (5 * Random.nextFloat())).toFloat(),
                 comment = Comment(

@@ -1,5 +1,6 @@
 package com.example.kotlinandroidexample.views.map
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
@@ -7,6 +8,11 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import android.view.View
+import android.widget.TextView
+import com.example.kotlinandroidexample.R
+import com.example.kotlinandroidexample.models.Restaurant
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
 class MarkerUtils {
     companion object {
@@ -62,6 +68,45 @@ class MarkerUtils {
             mask.recycle()
             return ret
         }
+
+
+        fun getDotIcon(context: Context): BitmapDescriptor {
+            val dotMarker = View.inflate(context, R.layout.view_dot_marker, null)
+            val bitmap = Bitmap.createScaledBitmap(
+                viewToBitmap(dotMarker),
+                dotMarker.width,
+                dotMarker.height,
+                true
+            )
+
+            return BitmapDescriptorFactory.fromBitmap(bitmap)
+        }
+
+        fun getPillIcon(context: Context, restaurant: Restaurant): BitmapDescriptor {
+            val pillMarker = View.inflate(context, R.layout.view_pill_marker, null)
+            val textView: TextView = pillMarker.findViewById(R.id.pillMarkerRatingText)
+            textView.text = restaurant.rating.toString()
+            val bitmap = Bitmap.createScaledBitmap(
+                viewToBitmap(pillMarker),
+                pillMarker.width,
+                pillMarker.height,
+                true
+            )
+
+            val markerViewIcon = BitmapDescriptorFactory.fromBitmap(
+                addShadow(
+                    bitmap,
+                    pillMarker.height,
+                    pillMarker.width,
+                    0xFF707070.toInt(),
+                    5,
+                    0f,
+                    5f
+                )
+            )
+            return markerViewIcon
+        }
     }
+
 
 }
