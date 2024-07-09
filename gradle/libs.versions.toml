@@ -19,6 +19,9 @@ googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 playServicesLocation = "21.3.0"
 playServicesMaps = "18.1.0"
 databinding = "4.2.1"
+rxandroid = "3.0.2"
+rxjava = "2.x.y"
+rxjavaVersion = "3.1.5"
 secretsGradlePlugin = "2.0.1"
 coordinatorlayout = "1.2.0"
 
@@ -40,6 +43,9 @@ material-v100 = { module = "com.google.android.material:material", version.ref =
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 androidx-databinding = { module = "androidx.databinding:databinding-runtime", version.ref = "databinding" }
+rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
+rxjava = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxjava" }
+rxjava3-rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjavaVersion" }
 secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 androidx-coordinatorlayout = { group = "androidx.coordinatorlayout", name = "coordinatorlayout", version.ref = "coordinatorlayout" }
 

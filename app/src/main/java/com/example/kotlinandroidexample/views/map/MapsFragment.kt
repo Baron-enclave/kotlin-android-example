@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.kotlinandroidexample.R
-import com.example.kotlinandroidexample.models.mRestaurants
+import com.example.kotlinandroidexample.models.getRestaurants
 import com.example.kotlinandroidexample.views.FINE_PERMISSION_CODE
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -85,7 +85,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
         clusterManager.renderer = mapRenderer
         clusterManager.clearItems()
-        setMarkers(mRestaurants.map {
+        setMarkers(getRestaurants().map {
             RestaurantMarker(
                 titleText = it.comment?.text ?: "",
                 location = LatLng(it.latitude, it.longitude),

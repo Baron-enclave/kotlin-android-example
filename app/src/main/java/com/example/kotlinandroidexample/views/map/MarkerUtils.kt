@@ -1,6 +1,5 @@
 package com.example.kotlinandroidexample.views.map
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BlurMaskFilter
 import android.graphics.Canvas
@@ -8,10 +7,6 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import android.view.View
-import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.example.kotlinandroidexample.R
 
 class MarkerUtils {
     companion object {

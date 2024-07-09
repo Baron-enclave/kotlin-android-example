@@ -3,9 +3,11 @@ package com.example.kotlinandroidexample.views.map
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.view.LayoutInflater
 import androidx.collection.LruCache
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
+import com.example.kotlinandroidexample.R
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -21,7 +23,11 @@ class MapMarkersRenderer(
     private val onImageLoaded: (icon: RestaurantMarker.Icon) -> Unit
 ) : DefaultClusterRenderer<RestaurantMarker>(context, map, clusterManager) {
 
-    private val mapMarkerView: MapMarkerView = MapMarkerView(context)
+
+    private val pillMarker = PillMarker(context)
+    private val dotMarker = DotMarker(context)
+
+    //    private val mapMarkerView: MapMarkerView = MapMarkerView(context)
     private val loadedImages = LruCache<String, Bitmap>(10)
     override fun onBeforeClusterItemRendered(
         clusterItem: RestaurantMarker,
@@ -52,27 +58,28 @@ class MapMarkersRenderer(
             is RestaurantMarker.Icon.BitmapIcon -> marker.icon
 
         }
-        mapMarkerView.setContent(
-            title = marker.titleText,
-            mapMarkerIcon = iconToShow
-        )
+//        mapMarkerView.setContent(
+//            title = marker.titleText,
+//            mapMarkerIcon = iconToShow
+//        )
 
         val bitmap = Bitmap.createScaledBitmap(
-            MarkerUtils.viewToBitmap(mapMarkerView),
-            mapMarkerView.width,
-            mapMarkerView.height,
+            MarkerUtils.viewToBitmap(pillMarker),
+            pillMarker.width,
+            pillMarker.height,
             true
         )
 
         val markerViewIcon = BitmapDescriptorFactory.fromBitmap(
+
             MarkerUtils.addShadow(
                 bitmap,
-                mapMarkerView.height,
-                mapMarkerView.width,
+                pillMarker.height,
+                pillMarker.width,
                 0xFF707070.toInt(),
-                10,
+                5,
                 0f,
-                15f
+                5f
             )
         )
         return markerViewIcon

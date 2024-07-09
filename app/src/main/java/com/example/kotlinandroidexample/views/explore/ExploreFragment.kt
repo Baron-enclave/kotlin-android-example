@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.kotlinandroidexample.R
-import com.example.kotlinandroidexample.models.mRestaurants
+import com.example.kotlinandroidexample.models.getRestaurants
 import com.example.kotlinandroidexample.views.adapters.ExploreListItemAdapter
 import com.example.kotlinandroidexample.views.explore.carousel.ImageSliderAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class ExploreFragment : Fragment() {
     lateinit var carouselRcv: RecyclerView
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,11 +47,11 @@ class ExploreFragment : Fragment() {
         view.findViewById<RecyclerView>(R.id.explore_bottomsheet_rcv).apply {
 
             layoutManager = LinearLayoutManager(view.context)
-            adapter = ExploreListItemAdapter(view.context, mRestaurants.toList())
+            adapter = ExploreListItemAdapter(view.context, getRestaurants())
         }
 
         carouselRcv.apply {
-            adapter = ImageSliderAdapter(view.context, mRestaurants.toList())
+            adapter = ImageSliderAdapter(view.context, getRestaurants())
             layoutManager =
                 LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         }
