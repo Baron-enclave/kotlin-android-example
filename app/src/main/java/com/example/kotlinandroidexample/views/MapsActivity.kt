@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.app.ActivityCompat
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.example.kotlinandroidexample.R
 import com.example.kotlinandroidexample.databinding.ActivityMapsBinding
@@ -38,7 +39,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityMapsBinding
     private lateinit var fusedOrientationProviderClient: FusedLocationProviderClient
 
-    private var markerCreationSubject: PublishSubject<MarkerCreationData> = PublishSubject.create()
+    private var markerCreationSubject: PublishSubject<List<MarkerCreationData>> =
+        PublishSubject.create()
     private var zoomEventSubject: PublishSubject<ZoomEventData> = PublishSubject.create()
     private lateinit var markerCreationDisposable: Disposable
     private lateinit var zoomEventDisposable: Disposable
@@ -68,43 +70,63 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap = googleMap
             markerCreationDisposable = markerCreationSubject
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { it ->
-
-                    val oldMarker = restaurantMarkerMap[it.restaurant]?.marker
+                .subscribe { listCreationData ->
+//                    val oldMarker = restaurantMarkerMap[it.restaurant]?.marker
                     ValueAnimator.ofFloat(1f, 0f).apply {
-                        duration = 300
-                        interpolator = LinearOutSlowInInterpolator()
+                        duration = 150
+                        interpolator = FastOutSlowInInterpolator()
                         addUpdateListener {
-                            oldMarker?.apply {
-                                alpha = animatedValue as Float
-                                setAnchor(
-                                    0f, 1 - animatedValue as Float
-                                )
+                            for (item in listCreationData) {
+                                val oldMarker = restaurantMarkerMap[item.restaurant]?.marker
+                                oldMarker?.apply {
+                                    alpha = animatedValue as Float
+//                                setAnchor(
+//                                    f, 01 - animatedValue as Float
+//                                )
+                                }
                             }
+
                         }
                         doOnEnd { _ ->
-                            oldMarker?.remove()
-                            restaurantMarkerMap[it.restaurant] = null
-                            if (it.iconType != MarkerType.HIDE) {
-                                val newMarker = mMap.addMarker(it.newMarkerOptions.apply {
-                                    alpha(0f)
-                                })
-                                restaurantMarkerMap[it.restaurant] =
-                                    MarkerInfo(newMarker, it.iconType)
-                                ValueAnimator.ofFloat(0f, 1f).apply {
-                                    duration = 300
-                                    interpolator = LinearOutSlowInInterpolator()
-                                    addUpdateListener {
-                                        newMarker?.apply {
-                                            alpha = it.animatedValue as Float
-                                            setAnchor(
-                                                0f,
-                                                1 - it.animatedValue as Float
-                                            )
-                                        }
-                                    }
-                                }.start()
+                            for (item in listCreationData) {
+                                val oldMarker = restaurantMarkerMap[item.restaurant]?.marker
+                                oldMarker?.remove()
+
+                                restaurantMarkerMap[item.restaurant] = null
+                                if (item.markerType != MarkerType.HIDE) {
+                                    val newMarker = mMap.addMarker(item.newMarkerOptions!!.apply {
+                                        alpha(0f)
+                                    })
+                                    restaurantMarkerMap[item.restaurant] =
+                                        MarkerInfo(newMarker, item.markerType)
+
+                                }
                             }
+                            ValueAnimator.ofFloat(0f, 1f).apply {
+                                duration = 200
+                                interpolator = LinearOutSlowInInterpolator()
+                                addUpdateListener {
+
+                                    for (item in listCreationData) {
+                                        val newMarkerInfo = restaurantMarkerMap[item.restaurant]
+                                        newMarkerInfo?.marker?.apply {
+                                            alpha = it.animatedValue as Float
+                                            if (newMarkerInfo.markerType == MarkerType.PILL) {
+                                                setAnchor(
+                                                    0.5f,
+                                                    1.5f - it.animatedValue as Float
+                                                )
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+
+                            }.start()
+
                         }
                     }.start()
                 }
@@ -115,7 +137,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                         LatLng(16.4637, 107.5909),
-                        12f
+                        13f
                     )
                 )
                 setOnCameraIdleListener {
@@ -130,7 +152,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private val pillBitmapDescriptorMap = mutableMapOf<Restaurant, BitmapDescriptor>()
     private fun updateMarkers(zoomEventData: ZoomEventData) {
+        var batchingListMarkerUpdate: MutableList<MarkerCreationData> = mutableListOf()
+        val batchingSize = 100
         for (restaurant in restaurantMarkerMap.keys) {
             val latLng = LatLng(
                 restaurant.latitude,
@@ -140,7 +165,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 val markerType = computeMarkerType(zoomEventData.zoomLevel, restaurant)
                 if (restaurantMarkerMap[restaurant]?.markerType != markerType) {
                     val iconBitmapDescriptor = when (markerType) {
-                        MarkerType.PILL -> MarkerUtils.getPillIcon(this, restaurant)
+                        MarkerType.PILL -> {
+                            val cacheBitMap = pillBitmapDescriptorMap[restaurant]
+                            if (cacheBitMap == null) {
+                                val bitmap = MarkerUtils.getPillIcon(this, restaurant)
+                                pillBitmapDescriptorMap[restaurant] = bitmap
+                            }
+                            pillBitmapDescriptorMap[restaurant]
+                        }
+
                         MarkerType.DOT -> dotMarker
                         MarkerType.HIDE -> null
                     }
@@ -149,7 +182,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         position(latLng)
 
                     }
-                    markerCreationSubject.onNext(
+                    batchingListMarkerUpdate.add(
                         MarkerCreationData(
                             markerType,
                             markerOptions,
@@ -157,8 +190,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         )
                     )
                 }
+            } else {
+                batchingListMarkerUpdate.add(
+                    MarkerCreationData(
+                        MarkerType.HIDE,
+                        null,
+                        restaurant
+                    )
+                )
             }
-
+            if (batchingListMarkerUpdate.size == batchingSize) {
+                Thread.sleep(100)
+                markerCreationSubject.onNext(batchingListMarkerUpdate)
+                batchingListMarkerUpdate = mutableListOf()
+            }
+        }
+        if (batchingListMarkerUpdate.isNotEmpty()) {
+            markerCreationSubject.onNext(batchingListMarkerUpdate)
+//            batchingListMarkerUpdate = mutableListOf()
         }
     }
 
@@ -237,8 +286,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private data class MarkerInfo(val marker: Marker?, val markerType: MarkerType)
 
     private data class MarkerCreationData(
-        val iconType: MarkerType,
-        val newMarkerOptions: MarkerOptions,
+        val markerType: MarkerType,
+        val newMarkerOptions: MarkerOptions?,
         val restaurant: Restaurant
     )
 
