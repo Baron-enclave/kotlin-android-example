@@ -106,6 +106,31 @@ class MarkerUtils {
             )
             return markerViewIcon
         }
+
+        fun getScalePillIcon(context: Context, restaurant: Restaurant): BitmapDescriptor {
+            val pillMarker = View.inflate(context, R.layout.view_pill_marker, null)
+            val textView: TextView = pillMarker.findViewById(R.id.pillMarkerRatingText)
+            textView.text = restaurant.rating.toString()
+            val bitmap = Bitmap.createScaledBitmap(
+                viewToBitmap(pillMarker),
+                pillMarker.width * 2,
+                pillMarker.height * 2,
+                true
+            )
+
+            val markerViewIcon = BitmapDescriptorFactory.fromBitmap(
+                addShadow(
+                    bitmap,
+                    pillMarker.height * 2,
+                    pillMarker.width * 2,
+                    0xFF707070.toInt(),
+                    5,
+                    0f,
+                    5f
+                )
+            )
+            return markerViewIcon
+        }
     }
 
 

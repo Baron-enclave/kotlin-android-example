@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp"
+    android:padding="8dp"
     android:orientation="horizontal">
 
     <androidx.cardview.widget.CardView
@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/ivRestaurantLogo"
-            android:layout_width="100dp"
-            android:layout_height="100dp" />
+            android:layout_width="88dp"
+            android:layout_height="88dp" />
 
     </androidx.cardview.widget.CardView>
 

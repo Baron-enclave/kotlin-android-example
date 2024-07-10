@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/exploreFragment">
+
+    <fragment
+        android:id="@+id/meFragment"
+        android:name="com.example.kotlinandroidexample.views.me.MeFragment"
+        android:label="MeFragment" />
+    <fragment
+        android:id="@+id/exploreFragment"
+        android:name="com.example.kotlinandroidexample.views.explore.ExploreFragment"
+        android:label="ExploreFragment" />
+    <fragment
+        android:id="@+id/communityFragment"
+        android:name="com.example.kotlinandroidexample.views.community.CommunityFragment"
+        android:label="CommunityFragment" />
+    <fragment
+        android:id="@+id/savedFragment"
+        android:name="com.example.kotlinandroidexample.views.saved.SavedFragment"
+        android:label="SavedFragment" />
+</navigation>

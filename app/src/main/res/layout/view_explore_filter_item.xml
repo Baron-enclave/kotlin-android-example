@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="wrap_content"
+    android:layout_height="28dp"
+    android:id="@+id/view_explore_filter_item"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/bg_explore_filter_item"
+    android:paddingVertical="4dp"
+    android:paddingHorizontal="8dp"
+    android:layout_marginEnd="8dp">
+
+    <ImageView
+        android:id="@+id/filter_icon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp" />
+
+    <TextView
+        android:id="@+id/filter_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="hello" />
+
+    <ImageView
+        android:id="@+id/filter_trail_icon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:src="@drawable/keyboard_arrow_down" />
+</LinearLayout>

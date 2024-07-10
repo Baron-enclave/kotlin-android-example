@@ -44,8 +44,6 @@ dependencies {
     implementation libs.androidx.appcompat
     implementation libs.material
     implementation libs.androidx.constraintlayout
-    implementation libs.androidx.navigation.fragment.ktx
-    implementation libs.androidx.navigation.ui.ktx
     implementation libs.androidx.databinding
     implementation libs.play.services.maps
     implementation libs.play.services.location
@@ -55,6 +53,10 @@ dependencies {
     implementation libs.androidx.coordinatorlayout
     implementation libs.rxjava3.rxjava
     implementation libs.rxandroid
+
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
+    implementation libs.androidx.navigation.dynamic.features.fragment
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit

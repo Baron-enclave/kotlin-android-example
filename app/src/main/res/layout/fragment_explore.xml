@@ -2,14 +2,22 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".views.explore.ExploreFragment"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--    <androidx.fragment.app.FragmentContainerView-->
+    <!--        android:id="@+id/explore_map"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:name="com.example.kotlinandroidexample.views.map.MapsFragment" />-->
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/explore_map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.example.kotlinandroidexample.views.map.MapsFragment" />
-
+        tools:context=".views.explore.ExploreFragment" />
 
     <LinearLayout
         android:layout_width="match_parent"

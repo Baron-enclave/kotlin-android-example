@@ -13,6 +13,7 @@ appcompat = "1.7.0"
 material = "1.12.0"
 constraintlayout = "2.1.4"
 materialVersion = "1.0.0"
+navigationDynamicFeaturesFragment = " 2.7.7"
 navigationFragmentKtx = "2.7.7"
 navigationUiKtx = "2.7.7"
 googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
@@ -28,6 +29,7 @@ coordinatorlayout = "1.2.0"
 [libraries]
 android-maps-utils = { module = "com.google.maps.android:android-maps-utils", version.ref = "androidMapsUtils" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigationDynamicFeaturesFragment" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 discrete-scrollview = { module = "com.yarolegovich:discrete-scrollview", version.ref = "discreteScrollview" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }

@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation">
     <item
-        android:id="@+id/mnu_explore"
+        android:id="@+id/exploreFragment"
         android:title="Explore"
         android:icon="@drawable/baseline_search_24"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/mnu_community"
+        android:id="@+id/communityFragment"
         android:title="Community"
         android:icon="@drawable/group_24"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/mnu_saved"
+        android:id="@+id/savedFragment"
         android:title="Saved"
         app:showAsAction="ifRoom"
         android:icon="@drawable/bookmark_24" />
     <item
-        android:id="@+id/mnu_me"
+        android:id="@+id/meFragment"
         android:title="Me"
         app:showAsAction="ifRoom"
         android:icon="@drawable/person_24" />

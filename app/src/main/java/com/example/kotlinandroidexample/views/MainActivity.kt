@@ -26,10 +26,10 @@ class MainActivity : AppCompatActivity() {
 
         mNavBarView.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.mnu_explore -> mViewPager.currentItem = 0
-                R.id.mnu_community -> mViewPager.currentItem = 1
-                R.id.mnu_saved -> mViewPager.currentItem = 2
-                R.id.mnu_me -> mViewPager.currentItem = 3
+                R.id.exploreFragment -> mViewPager.currentItem = 0
+                R.id.communityFragment -> mViewPager.currentItem = 1
+                R.id.savedFragment -> mViewPager.currentItem = 2
+                R.id.meFragment -> mViewPager.currentItem = 3
             }
             true
         }

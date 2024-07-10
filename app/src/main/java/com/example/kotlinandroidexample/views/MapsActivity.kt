@@ -56,7 +56,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+            .findFragmentById(R.id.map_act) as SupportMapFragment
         mapFragment.getMapAsync(this)
         getLastLocation()
         dotMarker = MarkerUtils.getDotIcon(this)
