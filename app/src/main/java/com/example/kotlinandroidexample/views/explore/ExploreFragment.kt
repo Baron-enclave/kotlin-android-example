@@ -91,39 +91,41 @@ class ExploreFragment : Fragment(), OnMapReadyCallback {
             })
         }
 
-        view.findViewById<RecyclerView>(R.id.explore_bottomsheet_rcv).apply {
+        val res = getRestaurants()
+        restaurantMarkerMap.putAll(res.map { it to null })
+//        view.findViewById<RecyclerView>(R.id.explore_bottomsheet_rcv).apply {
+//
+//            layoutManager = LinearLayoutManager(view.context)
+//            adapter = ExploreListItemAdapter(view.context, getRestaurants())
+//        }
 
-            layoutManager = LinearLayoutManager(view.context)
-            adapter = ExploreListItemAdapter(view.context, getRestaurants())
-        }
+//        listFilterItem.apply {
+//            addView(ExploreFilterItemView.settingFilterItem(view.context))
+//            addView(ExploreFilterItemView.sortFilterItem(view.context))
+//            addView(ExploreFilterItemView(view.context).apply {
+//                setTitle("Vegan")
+//                setIcon(R.drawable.category_vegan)
+//            })
+//            addView(ExploreFilterItemView(view.context).apply {
+//                setTitle("Vegetarian")
+//                setIcon(R.drawable.category_vegetarian)
+//            })
+//            addView(ExploreFilterItemView(view.context).apply {
+//                setTitle("Vegan Options")
+//                setIcon(R.drawable.category_veg_friendly)
+//            })
+//            addView(ExploreFilterItemView(view.context).apply {
+//                setTitle("Open Now")
+//            })
+//            addView(ExploreFilterItemView.moreFilterItem(view.context))
+//
+//        }
 
-        listFilterItem.apply {
-            addView(ExploreFilterItemView.settingFilterItem(view.context))
-            addView(ExploreFilterItemView.sortFilterItem(view.context))
-            addView(ExploreFilterItemView(view.context).apply {
-                setTitle("Vegan")
-                setIcon(R.drawable.category_vegan)
-            })
-            addView(ExploreFilterItemView(view.context).apply {
-                setTitle("Vegetarian")
-                setIcon(R.drawable.category_vegetarian)
-            })
-            addView(ExploreFilterItemView(view.context).apply {
-                setTitle("Vegan Options")
-                setIcon(R.drawable.category_veg_friendly)
-            })
-            addView(ExploreFilterItemView(view.context).apply {
-                setTitle("Open Now")
-            })
-            addView(ExploreFilterItemView.moreFilterItem(view.context))
-
-        }
-
-        carouselRcv.apply {
-            adapter = ImageSliderAdapter(view.context, getRestaurants())
-            layoutManager =
-                LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        }
+//        carouselRcv.apply {
+//            adapter = ImageSliderAdapter(view.context, getRestaurants())
+//            layoutManager =
+//                LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+//        }
 
 
         return view
@@ -136,11 +138,15 @@ class ExploreFragment : Fragment(), OnMapReadyCallback {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        markerCreationDisposable.dispose()
+        zoomEventDisposable.dispose()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dotMarker = MarkerUtils.getDotIcon(context)
-        val res = getRestaurants()
-        restaurantMarkerMap.putAll(res.map { it to null })
     }
 
     @SuppressLint("PotentialBehaviorOverride")
@@ -152,7 +158,7 @@ class ExploreFragment : Fragment(), OnMapReadyCallback {
                 .subscribe(this::createMarkers)
 
             zoomEventDisposable =
-                zoomEventSubject.debounce(350, TimeUnit.MILLISECONDS, Schedulers.newThread())
+                zoomEventSubject
                     .observeOn(Schedulers.io())
                     .subscribe(this::handleZoomEvent)
             mMap.apply {
