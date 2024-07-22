@@ -15,9 +15,12 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kotlinandroidexample.ApplicationComponent
+import com.example.kotlinandroidexample.DaggerApplicationComponent
 import com.example.kotlinandroidexample.R
 import com.example.kotlinandroidexample.models.Restaurant
 import com.example.kotlinandroidexample.models.getRestaurants
+import com.example.kotlinandroidexample.viewmodels.ExploreViewModel
 import com.example.kotlinandroidexample.views.explore.adapters.ExploreListItemAdapter
 import com.example.kotlinandroidexample.views.explore.adapters.ImageSliderAdapter
 import com.example.kotlinandroidexample.views.map.MarkerUtils
@@ -36,8 +39,13 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class ExploreFragment : Fragment(), OnMapReadyCallback {
+
+    @Inject
+    lateinit var exploreViewModel: ExploreViewModel
+
     private lateinit var mMap: GoogleMap
 
     private var markerCreationSubject: PublishSubject<List<MarkerCreationData>> =
@@ -66,6 +74,7 @@ class ExploreFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View {
 
+        DaggerApplicationComponent.create().inject(this)
         val view = inflater.inflate(R.layout.fragment_explore, container, false)
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.explore_map) as SupportMapFragment?
