@@ -2,6 +2,7 @@
 agp = "8.4.1"
 androidMapsUtils = "3.8.0"
 circleimageview = "3.1.0"
+coilCompose = "2.7.0"
 discreteScrollview = "1.5.1"
 glide = "4.16.0"
 kotlin = "1.9.0"
@@ -36,6 +37,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigationDynamicFeaturesFragment" }
 androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 discrete-scrollview = { module = "com.yarolegovich:discrete-scrollview", version.ref = "discreteScrollview" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
