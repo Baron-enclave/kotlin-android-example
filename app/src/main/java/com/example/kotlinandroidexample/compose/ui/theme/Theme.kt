@@ -1,4 +1,4 @@
-package com.example.kotlinandroidexample.views.compose.ui.theme
+package com.example.kotlinandroidexample.compose.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -11,17 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-//    primary = Purple80,
-//    secondary = PurpleGrey80,
-//    tertiary = Pink80
+    primary = Purple80,
+    secondary = PurpleGrey80,
+    tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
-//    primary = Purple40,
-//    secondary = PurpleGrey40,
-//    tertiary = Pink40,
-    secondaryContainer = Black0F,
-    onSecondaryContainer = WhiteFF
+    primary = Purple40,
+    secondary = PurpleGrey40,
+    tertiary = Pink40,
+//    secondaryContainer = Black0F,
+//    onSecondaryContainer = WhiteFF
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
